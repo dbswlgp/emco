@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "required": ["clusterLabel"],
+    "properties": {
+      "clusterLabel": {
+        "description": "Cluster label to use for this intent",
+        "type": "string",
+        "example": "cluster-label-1",
+        "maxLength": 128,
+        "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+      }
+    }
+  }

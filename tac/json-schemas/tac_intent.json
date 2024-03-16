@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "Name of the resource",
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "description": {
+          "description": "Description for the resource",
+          "type": "string",
+          "maxLength": 1024
+        },
+        "userData1": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "maxLength": 512
+        },
+        "userData2": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "maxLength": 512
+        }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "workflowClient",
+        "temporal"
+      ],
+      "properties": {
+        "hookType": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "[a-zA-Z]+-[a-zA-Z]+",
+          "enum": ["pre-install", "post-install", "pre-update", "post-update", "pre-termination", "post-termination"],
+          "description": "This value is used to indicate which part of the execution process this hook should be triggered."
+        },
+        "workflowClient": {
+          "type": "object",
+          "properties": {
+            "clientEndpointName": {
+              "description": "Endpoint for the client",
+              "type": "string",
+              "example": "demo-workflowclient.demo.svc.cluster.local"
+            },
+            "clientEndpointPort": {
+              "description": "Port number of the client to use",
+              "type": "integer",
+              "example": "9090"
+            }
+          }
+        },
+        "temporal": {
+          "type": "object",
+          "properties": {
+            "workflowClientName": {
+              "description": "Name of the workflow client to se",
+              "type": "string",
+              "example": "migrate_workflowclient"
+            },
+            "workflowStartOptions": {
+              "type": "object",
+              "required": [
+                "TaskQueue"
+              ],
+              "properties": {
+                "ID": {
+                  "description": "ID Of the workflow to start",
+                  "type": "string",
+                  "example": "migrate-apps-1"
+                },
+                "TaskQueue": {
+                  "description": "A Task Queue is a first-in, first-out queue that a Worker Process polls for Tasks.",
+                  "type": "string",
+                  "example": "MIGRATION_TASK_Q"
+                },
+                "WorkflowExecutionTimeout": {
+                  "description": "A Workflow Execution Timeout is the maximum time that a Workflow Execution can be executing (have an Open status) including retries and any usage of Continue As New.",
+                  "type": "integer"
+                },
+                "WorkflowRunTimeout": {
+                  "description": "This is the maximum amount of time that a single Workflow Run is restricted to.",
+                  "type": "integer"
+                },
+                "WorkflowTaskTimeout": {
+                  "description": "A Workflow Task Timeout is the maximum amount of time that the Temporal Server will wait for a Worker to start processing a Workflow Task after the Task has been pulled from the Task Queue.",
+                  "type": "integer"
+                },
+                "WorkflowIDReusePolicy": {
+                  "description": "A Workflow Id Reuse Policy determines whether a Workflow Execution is allowed to spawn with a particular Workflow Id, if that Workflow Id has been used with a previous, and now Closed, Workflow Execution.",
+                  "type": "integer"
+                }
+              }
+            },
+            "workflowParams": {
+              "type": "object",
+              "properties": {
+                "activityOptions": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "ActivityID": {
+                        "type": "string"
+                      },
+                      "HeartbeatTimeout": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "RetryPolicy": {
+                        "type": "object",
+                        "properties": {
+                          "BackoffCoefficient": {
+                            "type": "number",
+                            "format": "double"
+                          },
+                          "InitialInterval": {
+                            "type": "integer",
+                            "format": "int64"
+                          },
+                          "MaximumAttempts": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "MaximumInterval": {
+                            "type": "integer",
+                            "format": "int64"
+                          },
+                          "NonRetryableErrorTypes": {
+                            "type": ["array", "null"],
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "InitialInterval",
+                          "BackoffCoefficient",
+                          "MaximumInterval",
+                          "MaximumAttempts",
+                          "NonRetryableErrorTypes"
+                        ]
+                      },
+                      "ScheduleToCloseTimeout": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "ScheduleToStartTimeout": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "StartToCloseTimeout": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "TaskQueue": {
+                        "type": "string"
+                      },
+                      "WaitForCancellation": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "anyOf": [
+                      {
+                        "required": [
+                            "ScheduleToCloseTimeout"
+                        ]
+                    },
+                    {
+                        "required": [
+                            "StartToCloseTimeout"
+                        ]
+                    }
+                    ],
+                    "required": [
+                      "HeartbeatTimeout"
+                    ]
+                  }
+                },
+                "activityParams": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

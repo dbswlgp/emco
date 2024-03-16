@@ -1,0 +1,295 @@
+
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "description": "every object must have the following metadata in a nested object field called 'metadata'",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "a string that uniquely identifies the resource",
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+          "example": "edge-ca-cert"
+        },
+        "description": {
+          "description": "a detailed description of the resource",
+          "type": "string",
+          "maxLength": 1024,
+          "example": "this is a CA for the edge clusters"
+        },
+        "userData1": {"$ref": "#/definitions/userData"},
+        "userData2": {"$ref": "#/definitions/userData"}
+      },
+      "required": ["name"]
+    },
+    "spec": {
+      "description": "specification is a complete description of the desired state",
+      "type": "object",
+      "properties": {
+        "isCA" : {
+          "description": "indicates the certificate is a CA or not",
+          "type": "boolean",
+          "enum": [
+            true,
+            false
+          ],
+          "default": "true"
+        },
+        "issuerRef": {
+          "description": "details of the issuer for signing the certificate request",
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "name of the issuer",
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+              "example": "ca-issuer"
+            },
+            "kind": {
+              "description": "kind of the issuer",
+              "type": "string",
+              "enum": [
+                "ClusterIssuer",
+                "Issuer"
+              ],
+              "default": "ClusterIssuer"
+            },
+            "group": {
+              "description": "group of the issuer",
+              "type": "string",
+              "enum": [
+                "cert-manager.io"
+              ],
+              "default": "cert-manager.io"
+            },
+            "version": {
+              "description": "group of the issuer",
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+              "example": "v1"
+            }
+          },
+          "required": [
+            "name",
+            "group",
+            "kind"
+          ]
+        },
+        "duration" : {
+          "description": "duration of the certificate validity",
+          "type": "string",
+          "default": "8760h"
+        },
+        "issuingCluster": {
+          "description": "a string that uniquely identifies the resource",
+          "type": "object",
+          "properties": {
+            "cluster": {
+              "description": "name of the cluster",
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+              "example": "ca-issuer"
+            },
+            "clusterProvider": {
+              "description": "name of the clusterProvider",
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+              "example": "ca-issuer"
+            }
+          },
+          "required": [
+            "cluster",
+            "clusterProvider"
+          ]
+        },
+        "csrInfo": {
+          "description": "represent the certificate signining request(CSR) template",
+          "type": "object",
+          "properties": {
+            "keySize": {
+              "description": "bit size for the key",
+              "type": "integer",
+              "default": 4096
+            },
+            "version": {
+              "description": "certificate version",
+              "type": "integer",
+              "default": 1
+            },
+            "dnsNames": {
+              "description": "supported DNS names",
+              "type": "array",
+              "items": {
+                "type":"string",
+                "maxLength": 128
+              }
+            },
+            "emailAddresses": {
+              "description": "supported Email Addresses",
+              "type": "array",
+              "items": {
+                "type":"string",
+                "maxLength": 128
+              }
+            },
+            "keyUsages": {
+              "description": "supported certificate usages",
+              "type": "array",
+              "items": {
+                "type":"string",
+                "maxLength": 128
+              }
+            },
+            "algorithm": {
+              "description": "supported algorithms",
+              "type": "object",
+              "properties": {
+                "publicKeyAlgorithm": {
+                  "description": "PublicKey Algorithm type",
+                  "type": "string",
+                  "enum": [
+                    "RSA",
+                    "DSA",
+                    "ECDSA",
+                    "Ed25519"
+                  ],
+                  "default": "RSA"
+                },
+                "signatureAlgorithm": {
+                  "description": "Signature Algorithm type",
+                  "type": "string",
+                  "enum": [
+                    "MD5WithRSA",
+                    "SHA1WithRSA",
+                    "SHA256WithRSA",
+                    "SHA384WithRSA",
+                    "SHA512WithRSA",
+                    "ECDSAWithSHA1",
+                    "ECDSAWithSHA256",
+                    "ECDSAWithSHA384",
+                    "ECDSAWithSHA512",
+                    "SHA256WithRSAPSS",
+                    "SHA384WithRSAPSS",
+                    "SHA512WithRSAPSS",
+                    "PureEd25519"
+                  ],
+                  "default": "SHA512WithRSA"
+                }
+              }
+            },
+            "subject": {
+              "description": "locale and name details",
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "description": "location details",
+                  "type": "object",
+                  "properties": {
+                    "country": {
+                      "description": "country details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    },
+                    "locality": {
+                      "description": "locality details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    },
+                    "postalCode": {
+                      "description": "postalCode details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    },
+                    "province": {
+                      "description": "province details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    },
+                    "streetAddress": {
+                      "description": "streetAddress details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    }                      
+                  }
+                },
+                "names": {
+                  "description": "common name details",
+                  "type": "object",
+                  "properties": {
+                    "commonNamePrefix": {
+                      "description": "prefix for the commonName",
+                      "type": "string",
+                      "maxLength": 128
+                    }
+                  }
+                },
+                "organization": {
+                  "description": "organization details",
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "description": "organization details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    },
+                    "units": {
+                      "description": "organizationalUnit details",
+                      "type": "array",
+                      "items": {
+                        "type":"string",
+                        "maxLength": 128
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "certificate": {
+          "description": "represent the certificate template",
+          "type":"object",
+          "properties": {
+            "commonName": {
+              "description": "common name details",
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "userData": {
+      "description": "extended data associated with the resource",
+      "type": "string",
+      "maxLength": 512
+    }
+  }
+}

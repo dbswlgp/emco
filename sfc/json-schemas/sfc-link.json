@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "Name of the resource",
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "description": {
+          "description": "Description for the resource",
+          "type": "string",
+          "maxLength": 1024
+        },
+        "userData1": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "maxLength": 512
+        },
+        "userData2": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "maxLength": 512
+        }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "leftNet",
+        "rightNet",
+        "linkLabel",
+        "app",
+        "workloadResource",
+        "resourceType"
+      ],
+      "properties": {
+        "leftNet": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "rightNet": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "linkLabel": {
+          "type": "string",
+          "maxLength": 381,
+	  "pattern": "^((([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/))?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]=)(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]))$"
+        },
+        "app": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "workloadResource": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "(^$|^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$)"
+        },
+        "resourceType": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "(^$|^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$)"
+        }
+      }
+    }
+  }
+}

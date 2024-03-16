@@ -1,0 +1,7 @@
+{
+    "database-type": "mock_db_test",
+    "database-ip": "127.0.0.1",
+    "plugin-dir": ".",
+    "grpc-call-timeout": -27,
+    "grpc-conn-ready-time": 0
+}

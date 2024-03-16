@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "spec": {
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "array",
+          "items": {}
+        },
+        "reason": {
+          "description": "Reason for canceling the workflow so it can be logged.",
+          "type": "string"
+        },
+        "runID": {
+          "description": "The run id for the process that you want to query.",
+          "type": "string"
+        },
+        "temporalServer": {
+          "description": "The temporal server that you want to query.",
+          "type": "string"
+        },
+        "terminate": {
+          "description": "If you want it to gracefully exit or force quit.",
+          "type": "boolean"
+        },
+        "workflowID": {
+          "description": "ID of the workflow you would like to cancel.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "temporalServer"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "spec"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+    "database-type": "mongo",
+    "database-ip": "emco-mongo.emco.svc.cluster.local",
+    "etcd-ip": "emco-etcd",
+    "service-port": "9080"
+}

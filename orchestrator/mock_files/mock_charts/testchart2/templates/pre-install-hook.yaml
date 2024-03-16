@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+apiVersion: v1
+kind: Pod
+metadata:
+   name: pod1
+   annotations:
+       "helm.sh/hook": "pre-install"
+spec:
+  containers:
+  - name: pre-install-container
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ['sh', '-c', 'echo The pre-install hook is running && sleep 20' ]
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 0
+

@@ -1,0 +1,114 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020-2021 Intel Corporation
+
+package readynotifyserver
+
+import (
+	"context"
+	"sync"
+
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
+	pb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/readynotify"
+)
+
+// readyNotifyServer will be initialized by NewReadyNotifyServer() and
+// its lifecycle is valid until all the clients unsubscribed the stream notification channel
+type readyNotifyServer struct {
+	name string
+	// alertNotify contains the map of "appContextID" and "map of client name and stream server"
+	// For Ex: map[12345687:map[[dtc:st1] [dcm:st2]] 456785369:map[[ncm:st3] [dtc:st4]]]
+	alertNotify   map[string]map[string]pb.ReadyNotify_AlertServer
+	streamChannel map[pb.ReadyNotify_AlertServer]chan int
+	mutex         sync.Mutex
+}
+
+var notifServer *readyNotifyServer
+
+// Alert gets notified when the subscriber subscribes for an appcontext event notification
+func (s *readyNotifyServer) Alert(topic *pb.Topic, stream pb.ReadyNotify_AlertServer) error {
+	client := topic.GetClientName()
+	appContextID := topic.GetAppContext()
+	log.Info("[ReadyNotify gRPC] Received an Alert subscription request",
+		log.Fields{"client": client, "appContextID": appContextID})
+
+	// Adding the appContextID entry to the map
+	s.mutex.Lock()
+	if len(s.alertNotify[appContextID]) == 0 {
+		s.alertNotify[appContextID] = make(map[string]pb.ReadyNotify_AlertServer)
+		log.Info("[ReadyNotify gRPC] (TODO DEBUG) Adding alertNotify Map for AppContextID",
+			log.Fields{"client": client, "appContextID": appContextID})
+	}
+	s.alertNotify[appContextID][client] = stream
+	s.streamChannel[stream] = make(chan int)
+	log.Info("[ReadyNotify gRPC] (TODO DEBUG) Lengths of structure elements",
+		log.Fields{
+			"client":                          client,
+			"appContextID":                    appContextID,
+			"Length of streamChannel map":     len(s.streamChannel),
+			"Length of appContext client map": len(s.alertNotify[appContextID]),
+		})
+	c := s.streamChannel[stream]
+	ctx := stream.Context()
+	s.mutex.Unlock()
+
+	// Keep stream open
+	for {
+		select {
+		case <-ctx.Done():
+			log.Info("[ReadyNotify gRPC] Client has disconnected", log.Fields{"client": client})
+			return nil
+		case <-c:
+			log.Info("[ReadyNotify gRPC] stop channel got triggered for the client", log.Fields{"client": client})
+			return nil
+		}
+	}
+}
+
+//SendAppContextNotification sends appcontext back to the subscriber if pending
+func SendAppContextNotification(appContextID, app, cluster string) error {
+	streams := notifServer.alertNotify[appContextID]
+	var err error = nil
+	for _, stream := range streams {
+		err := stream.Send(&pb.Notification{AppContext: appContextID, App: app, Cluster: cluster})
+		if err != nil {
+			log.Error("[ReadyNotify gRPC] Notification back to client failed to be sent", log.Fields{"err": err, "appContextID": appContextID, "app": app, "cluster": cluster})
+			// return pkgerrors.New("Notification failed")
+		} else {
+			log.Info("[ReadyNotify gRPC] Notified the subscriber about appContext status changes", log.Fields{"appContextID": appContextID, "app": app, "cluster": cluster})
+		}
+	}
+	return err
+}
+
+// Unsubscribe will be called when the subscriber wants to terminate the stream
+func (s *readyNotifyServer) Unsubscribe(ctx context.Context, topic *pb.Topic) (*pb.UnsubscribeResponse, error) {
+
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	for appContextID, clientStreamMap := range s.alertNotify {
+		if appContextID == topic.GetAppContext() {
+			stream := clientStreamMap[topic.ClientName]
+			s.streamChannel[stream] <- 1
+
+			delete(clientStreamMap, topic.ClientName)
+			delete(s.streamChannel, stream)
+			// Delete the outer map's appcontextIDs if there is no inner map contents
+			if len(clientStreamMap) == 0 {
+				delete(s.alertNotify, appContextID)
+			}
+		}
+	}
+
+	return &pb.UnsubscribeResponse{}, nil
+}
+
+// NewReadyNotifyServer will create a new readyNotifyServer and destroys the previous one
+func NewReadyNotifyServer() *readyNotifyServer {
+	s := &readyNotifyServer{
+		name:          "readyNotifyServer",
+		alertNotify:   make(map[string](map[string]pb.ReadyNotify_AlertServer)),
+		streamChannel: make(map[pb.ReadyNotify_AlertServer]chan int),
+	}
+	notifServer = s
+	return s
+}

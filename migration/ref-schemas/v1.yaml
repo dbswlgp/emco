@@ -1,0 +1,13 @@
+name: migration
+resources:
+#migration
+  - name: migrationIntent
+    parent: deploymentIntentGroup
+  - name: migrationAppIntent
+    parent: migrationIntent
+    references:
+      - name: app
+  - name: migrationPolicy
+    parent: project
+  - name: migrationPolicyIntent
+    parent: migrationPolicy

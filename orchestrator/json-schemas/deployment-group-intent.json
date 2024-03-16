@@ -1,0 +1,90 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "spec": {
+        "required": [
+            "compositeProfile",
+            "version",
+            "logicalCloud"
+          ],
+          "type": "object",
+          "description": "DepSpecData has profile, version, OverrideValuesObj",
+          "properties": {
+            "overrideValues": {
+              "items": {
+                "required": [
+                  "app",
+                  "values"
+                ],
+                "type": "object",
+                "description": "OverrideValues has app name and ValuesObj",
+                "properties": {
+                  "app": {
+                    "type": "string"
+                  },
+                  "values": {
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 128
+                    },
+                    "type": "object"
+                  }
+                }
+              },
+              "type": "array"
+            },
+            "compositeProfile": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+            },
+            "version": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+            },
+            "logicalCloud": {
+              "description": "Logical Cloud to use for this intent",
+              "required": [
+                "logicalCloud"
+              ],
+              "type": "string",
+              "example": "cloud1",
+              "maxLength": 128,
+              "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+            }
+          }
+      },
+      "metadata": {
+        "required": ["name"],
+        "properties": {
+          "userData2": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "example": "Some more data",
+            "maxLength": 512
+          },
+          "userData1": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "example": "Some data",
+            "maxLength": 512
+          },
+          "name": {
+            "description": "Name of the resource",
+            "type": "string",
+            "example": "ResName",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+          },
+          "description": {
+            "description": "Description for the resource",
+            "type": "string",
+            "example": "Resource description",
+            "maxLength": 1024
+          }
+        }
+      }
+    }
+  }

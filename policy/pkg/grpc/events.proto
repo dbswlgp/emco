@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2022 Aarna Networks, Inc.
+
+syntax = "proto3";
+import "google/protobuf/any.proto";
+option go_package = "gitlab.com/project-emco/core/emco-base/src/policy/events";
+
+package events;
+
+service events{
+  rpc EventUpdate(ServerSpec) returns (stream Event) {}
+}
+
+message Event {
+  string eventId = 1;
+  string agentId = 2;
+  string contextId = 3;
+  string appName = 4;
+  google.protobuf.Any spec = 5;
+  bytes metricList = 6;
+}
+
+message ServerSpec {
+  int32 serverId = 1;
+}
+
+message AgentSpec {
+  string agentId = 1;
+}

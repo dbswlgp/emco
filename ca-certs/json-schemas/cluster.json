@@ -1,0 +1,72 @@
+
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "description": "every object must have the following metadata in a nested object field called 'metadata'",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "a string that uniquely identifies the resource",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "example": "edge-cluster"
+          },
+          "description": {
+            "description": "a detailed description of the resource",
+            "type": "string",
+            "maxLength": 1024,
+            "example": "this cluster is part of the CA cert"
+          },
+          "userData1": {"$ref": "#/definitions/userData"},
+          "userData2": {"$ref": "#/definitions/userData"}
+        },
+        "required": ["name"]
+      },
+      "spec": {
+        "description": "specification is a complete description of the desired state",
+        "type": "object",
+        "properties": {
+          "label": {
+            "description": "a string that identifies a set of cluster(s)",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "example": "edge-cluster"
+          },
+          "cluster": {
+            "description": "a string that identifies the specific cluster",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "example": "edge-cluster"
+          },
+          "scope": {
+            "description": "specifies which field should be used to identify the cluster(s)",
+            "type": "string",
+            "enum": [
+              "label",
+              "name"
+            ],
+            "default": "label"
+          },
+          "clusterProvider": {
+            "description": "a string that identifies the cluster provider",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "example": "edge-cluster"
+          }
+        }
+      }
+    },
+    "definitions": {
+      "userData": {
+        "description": "extended data associated with the resource",
+        "type": "string",
+        "maxLength": 512
+      }
+    }
+  }

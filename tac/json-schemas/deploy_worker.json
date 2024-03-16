@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "description": "Name of the resource",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+          },
+          "description": {
+            "description": "Description for the resource",
+            "type": "string",
+            "maxLength": 1024
+          },
+          "userData1": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "maxLength": 512
+          },
+          "userData2": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+    "spec": {
+      "type": "object",
+      "required": [
+        "startToCloseTimeout",
+        "deploymentIntentGroup",
+        "compositeApp",
+        "compositeAppVersion"
+      ],
+      "properties": {
+        "startToCloseTimeout": {
+          "description": "The timeout for starting the spinup of workers to the end of spinning up workers",
+          "type": "integer",
+          "format": "int64",
+          "default": 1000000
+        },
+        "deploymentIntentGroup": {
+          "description": "Deployment intent group the worker is inside.",
+          "type": "string",
+          "maxLength": 128
+        },
+        "compositeApp": {
+          "description": "The composite app the worker is a part of.",
+          "type": "string",
+          "maxLength": 128
+        },
+        "compositeAppVersion": {
+          "description": "The composite app version the worker is a part of.",
+          "type": "string",
+          "maxLength": 128
+        }
+        }
+    }
+    }
+}

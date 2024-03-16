@@ -1,0 +1,7 @@
+{
+    "database-type": "mongo",
+    "database-ip": "mongo",
+    "etcd-ip": "etcd",
+    "zipkin-ip": "zipkin.istio-system",
+    "service-port": "9077"
+}

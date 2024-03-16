@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "$defs": {
+      "WfTemporalStatusQuery": {
+        "properties": {
+          "temporalServer": {
+            "description": "The temporal server that you want to query.",
+            "type": "string"
+          },
+          "workflowID": {
+            "description": "The ID for the workflow that you are querying.",
+            "type": "string"
+          },
+          "runID": {
+            "description": "The run id for the process that you want to query.",
+            "type": "string"
+          },
+          "waitForResult": {
+            "description": "Wait for the results from the run or not.",
+            "type": "boolean"
+          },
+          "runDescribeWfExec": {
+            "description": "If true, run the DescribeWorkflowExecution API.",
+            "type": "boolean"
+          },
+          "getWfHistory": {
+            "description": "Get the complete history of the workflow up until now.",
+            "type": "boolean"
+          },
+          "queryType": {
+            "description": "The kind of query you would like to make to the server.",
+            "type": "string"
+          },
+          "queryParams": {
+            "items": true,
+            "type": "array"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "temporalServer",
+          "workflowID"
+        ]
+      }
+    }
+  }
+  

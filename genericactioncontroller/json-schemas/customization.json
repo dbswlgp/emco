@@ -1,0 +1,198 @@
+
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "description": "every object must have the following metadata in a nested object field called 'metadata'",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "a string that uniquely identifies the customization",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "example": "operator-gac-customization"
+          },
+          "description": {
+            "description": "a detailed description of the customization",
+            "type": "string",
+            "maxLength": 1024,
+            "example": "this is the customization for the Kubernetes ConfigMap object"
+          },
+          "userData1": {"$ref": "#/definitions/userData"},
+          "userData2": {"$ref": "#/definitions/userData"}
+        },
+        "required": ["name"]
+      },
+      "spec": {
+        "description": "specification is a complete description of the desired state",
+        "type": "object",
+        "properties": {
+          "clusterSpecific": {
+            "description": "indicates whether the customizations are specific to clusters where the app has deployed",
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          },
+          "clusterInfo": {
+            "description": "specifies the clusters to which this customization applies",
+            "type": "object",
+            "properties": {
+              "scope": {
+                "description": "defines how to identify the clusters to apply the customization",
+                "type": "string",
+                "enum": [
+                  "label",
+                  "name"
+                ]
+               },
+              "clusterProvider": {
+                "description": "name of the provider hosting the cluster",
+                "type": "string",
+                "maxLength": 128,
+                "example": "provider_1"
+              },
+              "cluster": {
+                "description": "name of the cluster",
+                "type": "string",
+                "maxLength": 128,
+                "example": "cluster_1"
+              },
+              "clusterLabel": {
+                "description": "a label on the cluster",
+                "type": "string",
+                "maxLength": 128,
+                "example": "label_a"
+              },
+              "mode": {
+                "description": "determines whether the customization is allowed on a cluster or not",
+                "type": "string",
+                "enum": [
+                  "allow",
+                  "deny"
+                ]
+              }
+            },
+            "required": [
+              "scope",
+              "clusterProvider",
+              "mode"
+            ]
+          },
+          "patchType": {
+            "description": "specifies the patch type to modify a Kubernetes object",
+            "type": "string",
+            "enum": [
+              "json",
+              "merge",
+              ""
+            ]
+          },
+          "patchJson": {
+            "description": "provides the format for describing changes to a Kubernetes object",
+            "type":"array",
+            "items": {"$ref": "#/definitions/patchJson"}
+          },
+          "configMapOptions": {
+            "description": "provides the configmap specific customizations",
+            "type": "object",
+            "properties": {
+              "dataKeyOptions": {
+                "description": "maps the customization values with the configuration data key",
+                "type": "array",
+                "items": {"$ref": "#/definitions/dataKeyOptions"}
+              }
+            }
+          },
+          "secretOptions": {
+            "description": "provides the secret specific customizations",
+            "type": "object",
+            "properties": {
+              "dataKeyOptions": {
+                "description": "maps the customization values with the configuration data key",
+                "type": "array",
+                "items": {"$ref": "#/definitions/dataKeyOptions"}
+              }
+            }
+          }
+        },
+        "required": [
+          "clusterSpecific",
+          "clusterInfo"
+        ]
+      }
+    },
+    "definitions": {
+      "dataKeyOptions": {
+        "description": "maps the customization values with the configuration data key",
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "description": "name of the customization file",
+            "type": "string",
+            "maxLength": 128
+          },
+          "keyName": {
+            "description": "data key name for the configurations in the customization file",
+            "type": "string",
+            "maxLength": 128
+          },
+          "mergePatch": {
+            "description": "indicates whether the customization files contain strategic merge patch data.",
+            "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+          }
+        },
+        "required": [
+          "fileName",
+          "keyName"
+        ]
+      },
+      "userData": {
+        "description": "extended data associated with the customization",
+        "type": "string",
+        "maxLength": 512
+      },
+      "patchJson": {
+        "description": "provides the format for describing changes to a Kubernetes object",
+        "type":"object",
+        "properties": {
+          "op": {
+            "description": "indicates the operation to perform",
+            "type": "string",
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
+           },
+          "path": {
+            "description": "references a location within the YAML definition of the Kubernetes object where the operation is performed",
+            "type": "string",
+            "maxLength": 128,
+            "example": "/spec/replicas"
+          },
+          "value": {
+            "description": "specifies the new value for the referenced location",
+            "type": ["string","number","object","array","boolean","null","integer"],
+            "example": 3
+          }
+        },
+        "required": [
+          "op",
+          "path",
+          "value"
+        ]
+      }
+    }
+  }

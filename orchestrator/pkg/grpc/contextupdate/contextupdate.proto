@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2022 Intel Corporation
+
+syntax = "proto3";
+option go_package="./contextupdate";
+service contextupdate {
+    // Instantiation
+    rpc UpdateAppContext(ContextUpdateRequest) returns (ContextUpdateResponse) {
+    }
+    // Termination
+    rpc TerminateAppContext(TerminateRequest) returns (TerminateResponse) {
+    }
+    // Post Instantiation, Update and Terminate event
+    rpc PostEvent(PostEventRequest) returns (PostEventResponse) {
+    }
+}
+
+// Event type for the event
+enum EventType{
+    INSTANTIATE = 0;
+    TERMINATE = 1;
+    UPDATE = 2;
+}
+
+message ContextUpdateRequest {
+    // AppContextId for the Request
+    string app_context = 1;
+    string intent_name = 2;
+    // Only populated if update/migrate case
+    string update_from_appContext = 3;
+}
+
+message ContextUpdateResponse {
+    bool app_context_updated = 1;
+    string app_context_update_message = 2;
+}
+
+message TerminateRequest {
+    // AppContextId for the Request
+    string app_context = 1;
+}
+
+message TerminateResponse {
+    bool app_context_terminated = 1;
+    string app_context_terminated_message = 2;
+}
+
+message PostEventRequest {
+    // AppContextId for the Request
+    string app_context = 1;
+    EventType event_type = 2;
+}
+
+message PostEventResponse {
+    bool success = 1;
+    string post_event_message = 2;
+}

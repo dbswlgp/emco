@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "required": ["name"],
+      "properties": {
+        "userData2": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "example": "Some more data",
+          "maxLength": 512
+        },
+        "userData1": {
+          "description": "User relevant data for the resource",
+          "type": "string",
+          "example": "Some data",
+          "maxLength": 512
+        },
+        "name": {
+          "description": "Name of the resource",
+          "type": "string",
+          "example": "ResName",
+          "maxLength": 128,
+          "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+        },
+        "description": {
+          "description": "Description for the resource",
+          "type": "string",
+          "example": "Resource description",
+          "maxLength": 1024
+        }
+      }
+    },
+    "spec": {
+    "required": ["app"],
+    "properties": {
+      "app": {
+        "type": "string",
+	"description": "Target Application Name of the Hpa intent (e.g. Prometheus)",
+        "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+      },
+      "migration": {
+        "type": "boolean",
+        "description": "Whether app is migratable"
+      },
+      "priority": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "default": 10,
+        "description": "Priority of app to be selected"
+      }
+    }
+    },
+    "status": {
+    "properties": {
+      "selectedApp": {
+        "type": "boolean",
+        "description": "app was selected or not"
+      },
+      "deployedCluster": {
+        "type": "string",
+	"description": "Name of the cluster provoder and cluster which app was deployed (e.g. OpenStack+cluster1)"
+      }
+    }
+    }
+  }
+}
+

@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "description": "Name of the resource",
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+          },
+          "description": {
+            "description": "Description for the resource",
+            "type": "string",
+            "maxLength": 1024
+          },
+          "userData1": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "maxLength": 512
+          },
+          "userData2": {
+            "description": "User relevant data for the resource",
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "spec": {
+          "type":"object",
+          "properties": {
+              "temporalServer": {
+                  "description": "location of temporal server",
+                  "type": "string",
+                  "example": "192.168.0.33:7233",
+                  "maxLength": 16
+              },
+              "workflowID": {
+                  "description": "ID of the workflow to cancel",
+                  "type": "string",
+                  "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
+              },
+              "runID": {
+                  "description": "ID of the running workflow",
+                  "type": "string"
+              }, 
+              "terminate": {
+                  "description": "Yes or no to termination of the workflow",
+                  "type": "boolean"
+              }, 
+              "reason": {
+                  "description": "Reasoning for cancelling the workflow",
+                  "type": "string"
+              },
+              "details": "int"
+          }
+      }
+    }
+}  

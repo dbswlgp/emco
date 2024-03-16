@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "name": {"$ref": "#/definitions/string"},    
+        "resources": {
+            "description": "Resources associated with the database schema segment",
+            "type": "array",
+            "properties": {
+                "name": {"$ref": "#/definitions/string"},          
+                "parent": {"$ref": "#/definitions/string"},
+                "references": {
+                    "description": "List of references, if any",
+                    "type": "array",
+                    "properties": {
+                        "name" :{"$ref": "#/definitions/string"},
+                        "type": {
+                            "description": "Type of the referenced resource. Allowed values 'map', 'many' or empty",
+                            "type": "string",
+                            "enum": [
+                                "map",
+                                "many",
+                                ""
+                            ],
+                            "example": "map",
+                            "maxLength": 512
+                        },
+                        "map": {"$ref": "#/definitions/string"},
+                        "commonKey": {"$ref": "#/definitions/string"},
+                        "fixedKv": {
+                            "description": "Key-Values of referenced resource that are known at compile time",
+                            "type": "object",
+                            "additionalProperties": {"$ref": "#/definitions/string"}
+                        },
+                        "filterKeys": {
+                            "description": "list of keys to filter, if the type is map",
+                            "type": "array",
+                            "items": {"$ref": "#/definitions/string"}
+                        }
+                    },
+                    "required": ["name"]
+                }
+            },
+            "required": ["name"]
+        }    
+    },
+    "required": ["name"],
+    "definitions": {
+        "string": {
+            "type": "string",
+            "example": "example",
+            "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+            "maxLength": 1024
+        }
+    }
+  }

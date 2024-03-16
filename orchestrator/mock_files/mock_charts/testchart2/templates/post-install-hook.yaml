@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+apiVersion: v1
+kind: Pod
+metadata:
+   name: pod2
+   annotations:
+       "helm.sh/hook": "post-install"
+spec:
+  containers:
+  - name: post-install-container
+    image: busybox
+    imagePullPolicy: Always
+    command: ['sh', '-c', 'echo The post-install hook is running && sleep 15' ]
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 0
+
