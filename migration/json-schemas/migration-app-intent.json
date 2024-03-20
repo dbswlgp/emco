@@ -37,7 +37,7 @@
     "properties": {
       "app": {
         "type": "string",
-	"description": "Target Application Name of the Hpa intent (e.g. Prometheus)",
+	"description": "Target Application Name of the Migration intent",
         "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
       },
       "migration": {
