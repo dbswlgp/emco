@@ -1,5 +1,5 @@
 # 시연 영상
-Linux Foundtation EMCO 프로젝트에 Migration Controller를 추가 구현하여 시연한 영상 <br/><br/>
+Linux Foundation EMCO 프로젝트에 Migration Controller를 추가 구현하여 시연한 영상 <br/><br/>
 Cluster1에 서비스를 배포할 때 자원이 있으면 바로 배포가 진행되지만, 없을 때는 Migration Controller를 호출하여 Cluster1에서 실행되고 있는 워크로드 중 일부를 선택하여 Cluster5로 이전하고 배포를 수행하는 것을 확인할 수 있다
 
 <p align="center">
